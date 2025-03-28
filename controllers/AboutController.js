@@ -1,7 +1,9 @@
+const apiResponse = require("../utils/apiRespone.js");
+
 exports.about = async (req, res) => {
   try {
-    res.send("hallo, this from api")
+    res.status(200).json(apiResponse(true, "hallo, this from api"));
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json(apiResponse(false, error.message, null, 500));
   }
 }
