@@ -5,7 +5,6 @@ const web_router = require("./routes/web.js");
 const port = "3030"
 const app =  express();
 
-// Routes
 app.use(express.json());
 
 app.use("/api/v1", v1_api_router);
