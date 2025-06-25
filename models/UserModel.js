@@ -1,7 +1,7 @@
 // models/userModel.js
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const Joi = require('joi');
+const Joi = require('joi')
 
 const schema = Joi.object({
   email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
@@ -9,33 +9,36 @@ const schema = Joi.object({
   job: Joi.string().max(155).required(),
 })
 
-const getAllUsers = () => prisma.user.findMany();
-const createUser = (data) => {
+const getAllUsers = () => prisma.user.findMany()
+const createUser = async (data) => {
 
-  
   let validation = schema.validate({
-    email: data["email"],
-    name: data["name"],
-    job: data["job"],
-  })
-  
-  let result = validation["value"]
-  console.log(result);
-  
-  prisma.user.create({data: result})
-};
-const updateUser = (data) => {
-  
-  let validation = schema.validate({
-    "email": data["email"],
-    "name": data["name"],
-    "job": data["job"],
+    email: data.email,
+    name: data.name,
+    job: data.job,
   })
 
-  prisma.user.update({
-  where: { id: data["id"] },
-  data: validation,
-});
-};
+  let result = validation.value
+  try {
+    await prisma.user.create({ data: { email: result.email, name: result.name, job: result.job } })
+  } catch (error) {
+    console.log(error)
+  }
+}
+const updateUser = async (data) => {
+  
+  let validation = schema.validate({
+    id: data.id,
+    email: data.email,
+    name: data.name,
+    job: data.job,
+  })
 
-module.exports = { getAllUsers, createUser, updateUser };
+  let result = validation.value
+  await prisma.user.update({
+    where: { id: parseInt(result.id) },
+    data: { email: result.email, name: result.name, job: result.job },
+  })
+}
+
+module.exports = { getAllUsers, createUser, updateUser }
