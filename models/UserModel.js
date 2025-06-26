@@ -9,22 +9,21 @@ const schema = Joi.object({
   job: Joi.string().max(155).required(),
 })
 
-const getAllUsers = () => prisma.user.findMany()
+const getAllUsers = async () => await prisma.users.findMany()
 const createUser = async (data) => {
 
-  let validation = schema.validate({
-    email: data.email,
-    name: data.name,
-    job: data.job,
-  })
+  
+let validation = schema.validate({
+  email: data.email,
+  name: data.name,
+  job: data.job,
+})
 
-  let result = validation.value
-  try {
-    await prisma.user.create({ data: { email: result.email, name: result.name, job: result.job } })
-  } catch (error) {
-    console.log(error)
-  }
+let result = validation.value
+
+await prisma.users.create({ data: { email: result.email, name: result.name, job: result.job } })
 }
+
 const updateUser = async (data) => {
   
   let validation = schema.validate({
@@ -35,10 +34,16 @@ const updateUser = async (data) => {
   })
 
   let result = validation.value
-  await prisma.user.update({
+  await prisma.users.update({
     where: { id: parseInt(result.id) },
     data: { email: result.email, name: result.name, job: result.job },
   })
 }
 
-module.exports = { getAllUsers, createUser, updateUser }
+const deleteUser = async (data) => {
+  await prisma.users.delete({
+    where: { id: parseInt(data.id) }
+  })
+}
+
+module.exports = { getAllUsers, createUser, updateUser, deleteUser }
