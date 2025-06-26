@@ -1,5 +1,5 @@
 const express = require('express')
-const v1_api_router = require('./routes/v1.api.js')
+const v1_api_router = require('./routes/api.js')
 const web_router = require('./routes/web.js')
 
 const port = '3030'

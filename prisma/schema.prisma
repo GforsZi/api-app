@@ -7,15 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Users {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String? @db.VarChar(100)
   job   String? @db.VarChar(255)
-}
-
-model todo {
-  id   Int     @id @default(autoincrement())
-  text String
-  done Boolean @default(false)
 }
