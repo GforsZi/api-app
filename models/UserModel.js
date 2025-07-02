@@ -1,49 +1,74 @@
 // models/userModel.js
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const Joi = require('joi')
+const {toLocalTime} = require('../utils/convertTimezone')
 
-const schema = Joi.object({
-  email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
-  name: Joi.string().max(155).required(),
-  job: Joi.string().max(155).required(),
-})
-
-const getAllUsers = async () => await prisma.users.findMany()
-const createUser = async (data) => {
+const getAllUsers = async () => {
+const users = await prisma.users.findMany()
 
   
-let validation = schema.validate({
-  email: data.email,
-  name: data.name,
-  job: data.job,
-})
+const result = users.map(user => ({
+  id: user.id,
+  name: user.name,
+  email: user.email,
+  password: user.password,
+  createdAt: toLocalTime(user.createdAt),
+  updatedAt: toLocalTime(user.updatedAt),
+}));
 
-let result = validation.value
+return result
+}
 
-await prisma.users.create({ data: { email: result.email, name: result.name, job: result.job } })
+const getUsers = async (data) => {
+  let user = await prisma.users.findUnique({
+    where: { id: data.id },
+  })
+
+  const value = {
+  id: user.id,
+  name: user.name,
+  email: user.email,
+  password: user.password,
+  createdAt: toLocalTime(user.createdAt),
+  updatedAt: toLocalTime(user.updatedAt),
+  }
+  
+  return value
+}
+
+const getPasswordUser = async (data) => {
+  const userPassword = await prisma.users.findFirst({
+    where: {id: data.id},
+    select: {password: true}
+  })
+
+  return userPassword
+}
+
+const createUser = async (data) => {
+  await prisma.users.create({
+    data: { email: data.email, name: data.name, password: data.password },
+  })
 }
 
 const updateUser = async (data) => {
-  
-  let validation = schema.validate({
-    id: data.id,
-    email: data.email,
-    name: data.name,
-    job: data.job,
-  })
-
-  let result = validation.value
   await prisma.users.update({
-    where: { id: parseInt(result.id) },
-    data: { email: result.email, name: result.name, job: result.job },
+    where: { id: data.id },
+    data: { email: data.email, name: data.name },
+  })
+}
+
+const changeUserPassword = async (data) => {
+  await prisma.users.update({
+    where: { id: data.id },
+    data: { password: data.password },
   })
 }
 
 const deleteUser = async (data) => {
   await prisma.users.delete({
-    where: { id: parseInt(data.id) }
+    where: { id: data.id },
   })
 }
 
-module.exports = { getAllUsers, createUser, updateUser, deleteUser }
+module.exports = { getAllUsers, getUsers, getPasswordUser, createUser, updateUser, changeUserPassword, deleteUser }

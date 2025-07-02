@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>hallo</h1>
-    <div id="container"></div>
-    <script src="script.js"></script>
-</body>
-</html>
+<%- include("components/start_layout.ejs") %>
+<%- include("components/start_sidebar.ejs") %>
+
+    <!-- hero section -->
+    <div class="jumbotron text-center bg-light-subtle vh-100" >
+      <div class="align-items-center justify-content-center d-flex h-100">
+        <div>
+          <img src="/images/uni-class.png" class="img-thumbnail" alt="Logo" />
+          <h1 class="display-4">API-APP</h1>
+          <p class="lead">Basic api application</p>
+        </div>
+      </div>
+    </div>
+
+<%- include("components/end_sidebar.ejs") %>
+<%- include("components/end_layout.ejs") %>

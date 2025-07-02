@@ -4,22 +4,27 @@
   "description": "my rest api project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
     "dev": "nodemon index",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "migrate": "npx prisma migrate dev",
+    "migrate:fresh": "npx prisma migrate reset"
   },
   "author": "Givaldi Gumelar Setiawan",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^3.1.9",
-    "prettier": "^3.5.3",
-    "prisma": "^6.5.0"
+    "prettier": "^3.5.3"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
+    "axios": "^1.10.0",
+    "bcrypt": "^6.0.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
-    "joi": "^17.13.3"
+    "joi": "^17.13.3",
+    "prisma": "^6.10.1"
   }
 }

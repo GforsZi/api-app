@@ -1,3 +1,4 @@
+const axios = require('axios/dist/browser/axios.cjs');
 const apiUrl = "http://localhost:3030";
 
 const requestUrl = `${apiUrl}/api/v1/users/`
