@@ -25,7 +25,7 @@ model Posts {
   description String?
   imageUrl    String
   createdAt   DateTime @default(now())
-  updateAt    DateTime @updatedAt
+  updatedAt   DateTime @updatedAt
 
   users    Users[]    @relation("UserPosts")
   comments Comments[]

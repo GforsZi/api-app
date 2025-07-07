@@ -5,7 +5,7 @@ const timezone = require('dayjs/plugin/timezone');
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const DEFAULT_ZONE = process.env.Timezone;
+const DEFAULT_ZONE = process.env.TIMEZONE;
 
 function toLocalTime(date, zone = DEFAULT_ZONE) {
   return dayjs(date).tz(zone).format('YYYY-MM-DD HH:mm:ss');
