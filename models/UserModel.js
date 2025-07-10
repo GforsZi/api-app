@@ -1,45 +1,52 @@
 // models/userModel.js
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const {toLocalTime} = require('../utils/convertTimezone')
+const { toLocalTime } = require('../utils/convertTimezone')
 
 const getAllUsers = async () => {
-const users = await prisma.users.findMany()
+  const users = await prisma.users.findMany({
+    select: {id: true, name: true, email: true, createdAt: true, updatedAt: true}
+  })
 
-  
-const result = users.map(user => ({
-  id: user.id,
-  name: user.name,
-  email: user.email,
-  password: user.password,
-  createdAt: toLocalTime(user.createdAt),
-  updatedAt: toLocalTime(user.updatedAt),
-}));
+  const result = users.map((user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    createdAt: toLocalTime(user.createdAt),
+    updatedAt: toLocalTime(user.updatedAt),
+  }))
 
-return result
+  return result
 }
 
-const getUsers = async (data) => {
+const getUserById = async (data) => {
   let user = await prisma.users.findUnique({
     where: { id: data.id },
+    select: { id: true, name: true, email: true, password: true, createdAt: true },
   })
 
   const value = {
-  id: user.id,
-  name: user.name,
-  email: user.email,
-  password: user.password,
-  createdAt: toLocalTime(user.createdAt),
-  updatedAt: toLocalTime(user.updatedAt),
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    createdAt: toLocalTime(user.createdAt),
   }
-  
+
   return value
+}
+
+const getUserByEmail = async (data) => {
+  let user = await prisma.users.findUnique({
+    where: { email: data.email },
+    select: { id: true, name: true, email: true, password: true, },
+  })
+  return user
 }
 
 const getPasswordUser = async (data) => {
   const userPassword = await prisma.users.findFirst({
-    where: {id: data.id},
-    select: {password: true}
+    where: { id: data.id },
+    select: { password: true },
   })
 
   return userPassword
@@ -71,4 +78,13 @@ const deleteUser = async (data) => {
   })
 }
 
-module.exports = { getAllUsers, getUsers, getPasswordUser, createUser, updateUser, changeUserPassword, deleteUser }
+module.exports = {
+  getAllUsers,
+  getUserById,
+  getUserByEmail,
+  getPasswordUser,
+  createUser,
+  updateUser,
+  changeUserPassword,
+  deleteUser,
+}

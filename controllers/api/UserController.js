@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 const {
   getAllUsers,
-  getUsers,
+  getUserById,
+  getUserByEmail,
   getPasswordUser,
   createUser,
   updateUser,
@@ -9,6 +10,48 @@ const {
   deleteUser,
 } = require('../../models/UserModel.js')
 const apiResponse = require('../../utils/apiRespone.js')
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body
+  try {
+    let user = await getUserByEmail({email})
+    if (!user) return res.status(401).json(apiResponse(false, 'incorect email or password', null, 401))
+
+    const valid = await bcrypt.compare(password, user.password)
+    if (!valid) return res.status(401).json(apiResponse(false, 'incorect email or password', null, 401))
+
+    req.session.userId = user.id
+    res.status(200).json(apiResponse(true, 'login successfully', null))
+  } catch (error) {
+    res.status(500).json(apiResponse(false, error.message, null, 500))
+  }
+}
+
+exports.logout = async (req, res) => {
+  const {password} = req.body
+  try {
+    const user = await getPasswordUser({id: req.session.userId})
+    const valid = await bcrypt.compare(password, user.password)
+    if (!valid) return res.status(401).json(apiResponse(false, 'incorect password', null, 401))
+
+    req.session.destroy(() => {
+      res.status(200).json(apiResponse(true, 'logout successfully', null))
+    })
+  } catch (error) {
+    res.status(500).json(apiResponse(false, error.message, null, 500))
+  }
+}
+
+exports.checkUserSession = async (req, res) => {
+  try {
+    if (!req.session.userId) return res.status(401).json(apiResponse(false, 'you are not logged in', null, 401))
+    
+    const user = await getUserById({id: req.session.userId})
+    res.status(200).json(apiResponse(true, 'you are logged in', user))
+  } catch (error) {
+    res.status(500).json(apiResponse(false, error.message, null, 500))
+  }
+}
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -19,10 +62,10 @@ exports.getAllUsers = async (req, res) => {
   }
 }
 
-exports.getUsers = async (req, res) => {
+exports.getUserById = async (req, res) => {
   const id = parseInt(req.params.id)
   try {
-    const user = await getUsers({id})
+    const user = await getUserById({id})
     res.status(200).json(apiResponse(true, 'get user data by id', user))
   } catch (error) {
     res.status(500).json(apiResponse(false, error.message, null, 500))
