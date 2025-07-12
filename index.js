@@ -28,5 +28,5 @@ app.use('/api/v1', v1_api_router)
 app.use('/', web_router)
 
 app.listen(port, () => {
-  console.log(`api run on localhost port ${port}, [ ${url}:${port} ]`)
+  console.log(`api run on localhost port ${port}, [ ${url} ]`)
 })

@@ -1,5 +1,15 @@
 const Joi = require('joi')
 
+const schemaRegister = Joi.object({
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+    .required(),
+  name: Joi.string().max(155).required(),
+  password: Joi.string().max(155).required(),
+  repeat_password: Joi.string().valid(Joi.ref('password')).required().messages({
+    'any.only': 'Passwords do not match',
+  }),
+})
 const schemaCreateUser = Joi.object({
   email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
@@ -26,4 +36,4 @@ const schemaChangePasswordUser = Joi.object({
   }),
 })
 
-module.exports = { schemaCreateUser, schemaUpdateUser, schemaChangePasswordUser }
+module.exports = { schemaRegister ,schemaCreateUser, schemaUpdateUser, schemaChangePasswordUser }

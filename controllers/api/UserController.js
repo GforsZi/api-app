@@ -5,6 +5,7 @@ const {
   getUserByEmail,
   getPasswordUser,
   createUser,
+  registerAccount,
   updateUser,
   changeUserPassword,
   deleteUser,
@@ -22,6 +23,20 @@ exports.login = async (req, res) => {
 
     req.session.userId = user.id
     res.status(200).json(apiResponse(true, 'login successfully', null))
+  } catch (error) {
+    res.status(500).json(apiResponse(false, error.message, null, 500))
+  }
+}
+
+exports.register = async (req, res) => {
+  const { email, name, password} = req.body
+  const SALT_ROUNDS = 10;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+    const users = await registerAccount({email, name, password: hashedPassword})
+    res.status(201).json(apiResponse(true, 'register successfully', users))
   } catch (error) {
     res.status(500).json(apiResponse(false, error.message, null, 500))
   }

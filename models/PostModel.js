@@ -17,7 +17,7 @@ const getAllPost = async () => {
   return result
 }
 
-const getPost = async (data) => {
+const getPostById = async (data) => {
   let post = await prisma.posts.findUnique({
     where: { id: data.id },
     include: {
@@ -25,16 +25,23 @@ const getPost = async (data) => {
     },
   })
 
-  // const value = {
-  // id: post.id,
-  // title: post.title,
-  // description: post.description,
-  // imageUrl: post.imageUrl,
-  // createdAt: toLocalTime(post.createdAt),
-  // updatedAt: toLocalTime(post.updatedAt),
-  // }
+  const value = {
+  id: post.id,
+  title: post.title,
+  description: post.description,
+  mediaUrl: post.mediaUrl,
+  publicId: post.publicId,
+  createdAt: toLocalTime(post.createdAt),
+  updatedAt: toLocalTime(post.updatedAt),
+  user: {
+    id: post.users[0].id,
+    name: post.users[0].name,
+    email: post.users[0].email,
+    photoProfileUrl: post.users[0].photoProfileUrl,
+  },
+  }
 
-  // return value
+  return value
 }
 
 const createPost = async (data) => {
@@ -42,7 +49,8 @@ const createPost = async (data) => {
     data: {
       title: data.title,
       description: data.description,
-      imageUrl: data.imageUrl,
+      mediaUrl: data.mediaUrl,
+      publicId: data.publicId,
       users: {
         connect: [{ id: data.userId }],
       },
@@ -53,7 +61,12 @@ const createPost = async (data) => {
 const updatePost = async (data) => {
   await prisma.posts.update({
     where: { id: data.id },
-    data: { title: data.title, description: data.description, imageUrl: data.imageUrl },
+    data: { 
+      title: data.title,
+      description: data.description,
+      mediaUrl: data.mediaUrl,
+      publicId: data.publicId,
+    },
   })
 }
 
@@ -63,4 +76,4 @@ const deletePost = async (data) => {
   })
 }
 
-module.exports = { getAllPost, getPost, createPost, updatePost, deletePost }
+module.exports = { getAllPost, getPostById, createPost, updatePost, deletePost }

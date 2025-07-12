@@ -8,12 +8,13 @@ datasource db {
 }
 
 model Users {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?  @db.VarChar(100)
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  name            String?  @db.VarChar(100)
+  photoProfileUrl String
+  password        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   posts    Posts[]    @relation("UserPosts")
   comments Comments[]
@@ -23,7 +24,8 @@ model Posts {
   id          Int      @id @default(autoincrement())
   title       String
   description String?
-  imageUrl    String
+  mediaUrl    String
+  publicId    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
