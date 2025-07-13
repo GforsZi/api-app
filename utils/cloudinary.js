@@ -12,8 +12,8 @@ const storage = new CloudinaryStorage({
   params: async (req, file) => {
     return {
       folder: 'media',
-      allowed_formats: ["jpg", "jpeg", "png", "mp4", "webm"],
-      transformation: [{ width: 800, crop: "limit" }],
+      allowed_formats: ['jpg', 'jpeg', 'png', 'mp4', 'webm'],
+      transformation: [{ width: 800, crop: 'limit' }],
       public_id: Date.now() + '-' + file.originalname.split('.')[0],
     }
   },

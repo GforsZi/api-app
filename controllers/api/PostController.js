@@ -5,7 +5,7 @@ const {
   updatePost,
   deletePost,
 } = require('../../models/PostModel.js')
-const { cloudinary } = require("../../utils/cloudinary.js");
+const { cloudinary } = require('../../utils/cloudinary.js')
 const apiResponse = require('../../utils/apiRespone.js')
 
 exports.getAllPost = async (req, res) => {
@@ -18,8 +18,8 @@ exports.getAllPost = async (req, res) => {
 }
 
 exports.getPostById = async (req, res) => {
-  const id = parseInt(req.params.id)
   try {
+    const id = parseInt(req.params.id)
     const post = await getPostById({ id })
     res.status(200).json(apiResponse(true, 'get post data by id', post))
   } catch (error) {
@@ -28,12 +28,17 @@ exports.getPostById = async (req, res) => {
 }
 
 exports.createPost = async (req, res) => {
-  const { title, description} = req.body
-
   try {
+    const { title, description } = req.body
     const mediaUrl = req.file.path
     const mediaName = req.file.filename
-    const posts = await createPost({ title, description, mediaUrl, publicId: mediaName, userId: req.session.userId })
+    const posts = await createPost({
+      title,
+      description,
+      mediaUrl,
+      publicId: mediaName,
+      userId: req.session.userId,
+    })
     res.status(201).json(apiResponse(true, 'create post data', posts))
   } catch (error) {
     res.status(500).json(apiResponse(false, error.message, null, 500))
@@ -41,15 +46,16 @@ exports.createPost = async (req, res) => {
 }
 
 exports.updatePost = async (req, res) => {
-  const id = parseInt(req.params.id)
-  const { title, description, imageUrl } = req.body
-
   try {
+    const id = parseInt(req.params.id)
+    const { title, description, imageUrl } = req.body
     const mediaUrl = req.file.path
     const mediaName = req.file.filename
+
     const existing = await getPostById({ id })
-    if (existing.user.id != req.session.userId ) return res.status(401).json(apiResponse(false, "permission required", null, 401))
-    if (!existing) return res.status(404).json(apiResponse(false, "Media not found", null, 404))
+    if (existing.user.id != req.session.userId)
+      return res.status(401).json(apiResponse(false, 'permission required', null, 401))
+    if (!existing) return res.status(404).json(apiResponse(false, 'Media not found', null, 404))
 
     const posts = await updatePost({ id, title, description, mediaUrl, publicId: mediaName })
     await cloudinary.uploader.destroy(existing.publicId, {
@@ -62,12 +68,14 @@ exports.updatePost = async (req, res) => {
 }
 
 exports.deletePost = async (req, res) => {
-  const id = parseInt(req.params.id)
   try {
+    const id = parseInt(req.params.id)
+
     const existing = await getPostById({ id })
-    if (existing.user.id != req.session.userId ) return res.status(401).json(apiResponse(false, "permission required", null, 401))
-    if (!existing) return res.status(404).json(apiResponse(false, "Media not found", null, 404))
-    
+    if (existing.user.id != req.session.userId)
+      return res.status(401).json(apiResponse(false, 'permission required', null, 401))
+    if (!existing) return res.status(404).json(apiResponse(false, 'Media not found', null, 404))
+
     const posts = await deletePost({ id })
     await cloudinary.uploader.destroy(existing.publicId, {
       invalidate: true,

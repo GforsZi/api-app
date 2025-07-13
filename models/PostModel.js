@@ -26,19 +26,19 @@ const getPostById = async (data) => {
   })
 
   const value = {
-  id: post.id,
-  title: post.title,
-  description: post.description,
-  mediaUrl: post.mediaUrl,
-  publicId: post.publicId,
-  createdAt: toLocalTime(post.createdAt),
-  updatedAt: toLocalTime(post.updatedAt),
-  user: {
-    id: post.users[0].id,
-    name: post.users[0].name,
-    email: post.users[0].email,
-    photoProfileUrl: post.users[0].photoProfileUrl,
-  },
+    id: post.id,
+    title: post.title,
+    description: post.description,
+    mediaUrl: post.mediaUrl,
+    publicId: post.publicId,
+    createdAt: toLocalTime(post.createdAt),
+    updatedAt: toLocalTime(post.updatedAt),
+    user: {
+      id: post.users[0].id,
+      name: post.users[0].name,
+      email: post.users[0].email,
+      photoProfileUrl: post.users[0].photoProfileUrl,
+    },
   }
 
   return value
@@ -61,7 +61,7 @@ const createPost = async (data) => {
 const updatePost = async (data) => {
   await prisma.posts.update({
     where: { id: data.id },
-    data: { 
+    data: {
       title: data.title,
       description: data.description,
       mediaUrl: data.mediaUrl,

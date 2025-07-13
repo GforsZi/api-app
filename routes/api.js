@@ -11,7 +11,18 @@ const {
   changeUserPassword,
   deleteUser,
 } = require('../controllers/api/UserController.js')
-const {getAllPost, getPostById, createPost, updatePost, deletePost} = require('../controllers/api/PostController.js')
+const {
+  getAllPost,
+  getPostById,
+  createPost,
+  updatePost,
+  deletePost,
+} = require('../controllers/api/PostController.js')
+const {
+  getAllCommentByIdPost,
+  createComment,
+  deleteComment,
+} = require('../controllers/api/CommentController.js')
 const {
   schemaRegister,
   schemaCreateUser,
@@ -34,16 +45,21 @@ v1_api_router.get('/user/:id', loginAuth, getUserById)
 v1_api_router.post('/user/add', loginAuth, validate(schemaCreateUser), createUser)
 v1_api_router.put('/user/:id/edit', loginAuth, validate(schemaUpdateUser), updateUser)
 v1_api_router.put(
-  '/user/:id/changePassword', loginAuth,
+  '/user/:id/changePassword',
+  loginAuth,
   validate(schemaChangePasswordUser),
   changeUserPassword,
 )
-v1_api_router.delete('/users/:id/delete', deleteUser)
+v1_api_router.delete('/users/:id/delete', loginAuth, deleteUser)
 
 v1_api_router.get('/post', loginAuth, getAllPost)
 v1_api_router.get('/post/:id', loginAuth, getPostById)
 v1_api_router.post('/post/add', loginAuth, upload.single('file'), createPost)
-v1_api_router.put('/post/:id/edit', loginAuth,upload.single('file'), updatePost)
+v1_api_router.put('/post/:id/edit', loginAuth, upload.single('file'), updatePost)
 v1_api_router.delete('/post/:id/delete', loginAuth, deletePost)
+
+v1_api_router.get('/post/:postId/comment', loginAuth, getAllCommentByIdPost)
+v1_api_router.post('/post/:postId/comment/add', loginAuth, createComment)
+v1_api_router.delete('/comment/:id/delete', loginAuth, deleteComment)
 
 module.exports = v1_api_router

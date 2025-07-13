@@ -36,4 +36,4 @@ const schemaChangePasswordUser = Joi.object({
   }),
 })
 
-module.exports = { schemaRegister ,schemaCreateUser, schemaUpdateUser, schemaChangePasswordUser }
+module.exports = { schemaRegister, schemaCreateUser, schemaUpdateUser, schemaChangePasswordUser }

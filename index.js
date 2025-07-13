@@ -23,7 +23,6 @@ app.use(
   }),
 )
 
-
 app.use('/api/v1', v1_api_router)
 app.use('/', web_router)
 

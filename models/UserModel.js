@@ -5,7 +5,14 @@ const { toLocalTime } = require('../utils/convertTimezone')
 
 const getAllUsers = async () => {
   const users = await prisma.users.findMany({
-    select: {id: true, name: true, email: true, photoProfileUrl: true, createdAt: true, updatedAt: true}
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      photoProfileUrl: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   })
 
   const result = users.map((user) => ({
@@ -39,7 +46,7 @@ const getUserById = async (data) => {
 const getUserByEmail = async (data) => {
   let user = await prisma.users.findUnique({
     where: { email: data.email },
-    select: { id: true, name: true, email: true, password: true, },
+    select: { id: true, name: true, email: true, password: true },
   })
   return user
 }
@@ -56,7 +63,12 @@ const getPasswordUser = async (data) => {
 const registerAccount = async (data) => {
   $url = process.env.URL
   await prisma.users.create({
-    data: { email: data.email, name: data.name, photoProfileUrl: `${$url}/images/default_profile_img.svg`, password: data.password },
+    data: {
+      email: data.email,
+      name: data.name,
+      photoProfileUrl: `${$url}/images/default_profile_img.svg`,
+      password: data.password,
+    },
   })
 }
 
